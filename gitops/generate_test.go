@@ -34,13 +34,15 @@ func TestGenerateTektonBuild(t *testing.T) {
 	fs := ioutils.NewMemoryFilesystem()
 
 	tests := []struct {
-		name          string
-		fs            afero.Afero
-		testFolder    string
-		component     appstudiov1alpha1.Component
-		errors        *testutils.ErrorStack
-		want          []string
-		wantErrString string
+		name                 string
+		fs                   afero.Afero
+		testFolder           string
+		component            appstudiov1alpha1.Component
+		errors               *testutils.ErrorStack
+		want                 []string
+		wantErrString        string
+		expectFail           bool
+		testMessageToDisplay string
 	}{
 		{
 			name:       "Check trigger based resources",
@@ -96,14 +98,44 @@ func TestGenerateTektonBuild(t *testing.T) {
 				buildRepositoryFileName,
 			},
 		},
+		{
+			name: "Fail build generation because of readonly fs.",
+			fs:   ioutils.NewReadOnlyFs(),
+			component: appstudiov1alpha1.Component{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      "testcomponent",
+					Namespace: "workspace-name",
+				},
+				Spec: appstudiov1alpha1.ComponentSpec{
+					Source: appstudiov1alpha1.ComponentSource{
+						ComponentSourceUnion: appstudiov1alpha1.ComponentSourceUnion{
+							GitSource: &appstudiov1alpha1.GitSource{
+								URL: "invalid-url-here",
+							},
+						},
+					},
+				},
+			},
+			testMessageToDisplay: "Failure build generation is expected by readonly fs, but seems no error is returned",
+			expectFail:           true,
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			outputPath := outputPathBase + tt.testFolder
-			if err := GenerateTektonBuild(outputPath, tt.component, fs, "/", prepare.GitopsConfig{}); err != nil {
-				t.Errorf("Failed to generate build gitops resources. Cause: %v", err)
+
+			if tt.expectFail {
+				err := GenerateTektonBuild(outputPath, tt.component, tt.fs, "/", prepare.GitopsConfig{})
+				if err == nil {
+					t.Errorf(tt.testMessageToDisplay)
+				}
+			} else {
+				if err := GenerateTektonBuild(outputPath, tt.component, tt.fs, "/", prepare.GitopsConfig{}); err != nil {
+					t.Errorf("Failed to generate build gitops resources. Cause: %v", err)
+				}
 			}
+
 			// Ensure that needed resources generated
 			path, err := homedir.Expand(outputPath)
 			testutils.AssertNoError(t, err)
