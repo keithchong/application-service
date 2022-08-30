@@ -16,6 +16,9 @@
 package gitops
 
 import (
+	"path/filepath"
+	"testing"
+
 	"github.com/mitchellh/go-homedir"
 	appstudiov1alpha1 "github.com/redhat-appstudio/application-service/api/v1alpha1"
 	"github.com/redhat-appstudio/application-service/gitops/prepare"
@@ -24,8 +27,6 @@ import (
 	"github.com/spf13/afero"
 	"github.com/stretchr/testify/assert"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"path/filepath"
-	"testing"
 )
 
 func TestGenerateTektonBuild(t *testing.T) {
