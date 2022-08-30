@@ -23,8 +23,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/redhat-appstudio/application-service/gitops"
-
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
 	"go.uber.org/zap/zapcore"
@@ -153,7 +151,7 @@ func main() {
 	// Retrieve the name of the default repository to use
 	imageRepository := os.Getenv("IMAGE_REPOSITORY")
 	if imageRepository == "" {
-		imageRepository = gitops.DefaultImageRepo
+		imageRepository = appservicegitops.DefaultImageRepo
 	}
 	appservicegitops.SetDefaultImageRepo(imageRepository)
 

@@ -478,6 +478,11 @@ func (r *ComponentReconciler) generateGitops(ctx context.Context, req ctrl.Reque
 		return gitOpsErr
 	}
 	err = gitopsgen.CommitAndPush(tempDir, "", gitOpsURL, mappedGitOpsComponent.Name, r.Executor, gitOpsBranch, "Generating Tekton resources")
+	if err != nil {
+		gitOpsErr := util.SanitizeErrorMessage(err)
+		log.Error(gitOpsErr, "unable to commit and push gitops resources due to error")
+		return gitOpsErr
+	}
 
 	// Get the commit ID for the gitops repository
 	var commitID string
