@@ -19,10 +19,11 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"path/filepath"
+
 	gitopsgenv1alpha1 "github.com/redhat-developer/gitops-generator/api/v1alpha1"
 	gitopsgen "github.com/redhat-developer/gitops-generator/pkg"
 	corev1 "k8s.io/api/core/v1"
-	"path/filepath"
 
 	"github.com/go-logr/logr"
 	kcpclient "github.com/kcp-dev/apimachinery/pkg/client"

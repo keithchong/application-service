@@ -17,11 +17,11 @@ package gitops
 
 import (
 	"fmt"
-	gitopsgen "github.com/redhat-developer/gitops-generator/pkg"
 	"path/filepath"
 
 	appstudiov1alpha1 "github.com/redhat-appstudio/application-service/api/v1alpha1"
 	"github.com/redhat-appstudio/application-service/gitops/prepare"
+	gitopsgen "github.com/redhat-developer/gitops-generator/pkg"
 	"github.com/spf13/afero"
 )
 

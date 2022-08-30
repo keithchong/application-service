@@ -17,13 +17,14 @@ package util
 
 import (
 	"fmt"
+	"os"
+	"reflect"
+	"testing"
+
 	gitopsgenv1alpha1 "github.com/redhat-developer/gitops-generator/api/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"os"
-	"reflect"
-	"testing"
 
 	appstudiov1alpha1 "github.com/redhat-appstudio/application-service/api/v1alpha1"
 	"github.com/stretchr/testify/assert"

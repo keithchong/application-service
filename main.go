@@ -20,9 +20,10 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/redhat-appstudio/application-service/gitops"
 	"log"
 	"os"
+
+	"github.com/redhat-appstudio/application-service/gitops"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
@@ -54,6 +55,7 @@ import (
 	"github.com/redhat-appstudio/application-service/pkg/util/ioutils"
 	appstudioshared "github.com/redhat-appstudio/managed-gitops/appstudio-shared/apis/appstudio.redhat.com/v1alpha1"
 	gitopsgen "github.com/redhat-developer/gitops-generator/pkg"
+
 	//+kubebuilder:scaffold:imports
 	apisv1alpha1 "github.com/kcp-dev/kcp/pkg/apis/apis/v1alpha1"
 )

@@ -19,12 +19,13 @@ package gitops
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/redhat-developer/gitops-generator/pkg/resources"
-	"github.com/redhat-developer/gitops-generator/pkg/yaml"
 	"net/url"
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/redhat-developer/gitops-generator/pkg/resources"
+	"github.com/redhat-developer/gitops-generator/pkg/yaml"
 
 	devfilev1alpha2 "github.com/devfile/api/v2/pkg/apis/workspaces/v1alpha2"
 	devfilecommon "github.com/devfile/library/pkg/devfile/parser/data/v2/common"

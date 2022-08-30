@@ -17,14 +17,15 @@ package util
 
 import (
 	"fmt"
-	gitopsgenv1alpha1 "github.com/redhat-developer/gitops-generator/api/v1alpha1"
 	"io/ioutil"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"net/http"
 	"net/url"
 	"os"
 	"regexp"
 	"strings"
+
+	gitopsgenv1alpha1 "github.com/redhat-developer/gitops-generator/api/v1alpha1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/go-git/go-git/v5"
 	transportHttp "github.com/go-git/go-git/v5/plumbing/transport/http"
