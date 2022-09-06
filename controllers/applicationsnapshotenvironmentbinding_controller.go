@@ -34,6 +34,7 @@ import (
 	appstudioshared "github.com/redhat-appstudio/managed-gitops/appstudio-shared/apis/appstudio.redhat.com/v1alpha1"
 	"github.com/spf13/afero"
 	"k8s.io/apimachinery/pkg/api/errors"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -201,18 +202,13 @@ func (r *ApplicationSnapshotEnvironmentBindingReconciler) Reconcile(ctx context.
 			}
 		}
 
+		// Map our structs to gitops-generator structs
 		envVars := make([]corev1.EnvVar, 0)
 		for _, env := range component.Configuration.Env {
 			envVars = append(envVars, corev1.EnvVar{
 				Name:  env.Name,
 				Value: env.Value,
 			})
-		}
-		gitopsgenBinding := gitopsgenv1alpha1.BindingComponentConfiguration{
-			Name:      component.Name,
-			Replicas:  component.Configuration.Replicas,
-			Resources: component.Configuration.Resources,
-			Env:       envVars,
 		}
 
 		environmentConfigEnvVars := make([]corev1.EnvVar, 0)
@@ -223,14 +219,22 @@ func (r *ApplicationSnapshotEnvironmentBindingReconciler) Reconcile(ctx context.
 			})
 		}
 
-		gitopsgenEnv := gitopsgenv1alpha1.Environment{
-			Spec: gitopsgenv1alpha1.EnvironmentSpec{
-				Configuration: gitopsgenv1alpha1.EnvironmentConfiguration{
-					Env: environmentConfigEnvVars,
-				},
-			},
+		resourceRequirements := corev1.ResourceRequirements{}
+		if component.Configuration.Resources != nil {
+			resourceRequirements = *component.Configuration.Resources
 		}
-		err = gitopsgen.GenerateOverlaysAndPush(tempDir, clone, gitOpsRemoteURL, gitopsgenBinding, gitopsgenEnv, applicationName, environmentName, imageName, appSnapshotEnvBinding.Namespace, r.Executor, r.AppFS, gitOpsBranch, gitOpsContext, true, componentGeneratedResources)
+		gitopsgenBinding := gitopsgenv1alpha1.Component{
+			ObjectMeta: v1.ObjectMeta{
+				Name: component.Name,
+			},
+			Replicas:                component.Configuration.Replicas,
+			Resources:               resourceRequirements,
+			Env:                     envVars,
+			EnvironmentConfigEnvVar: environmentConfigEnvVars,
+		}
+		// end mapping
+
+		err = gitopsgen.GenerateOverlaysAndPush(tempDir, clone, gitOpsRemoteURL, gitopsgenBinding, applicationName, environmentName, imageName, appSnapshotEnvBinding.Namespace, r.Executor, r.AppFS, gitOpsBranch, gitOpsContext, true, componentGeneratedResources)
 		if err != nil {
 			gitOpsErr := util.SanitizeErrorMessage(err)
 			log.Error(gitOpsErr, fmt.Sprintf("unable to get generate gitops resources for %s %v", componentName, req.NamespacedName))

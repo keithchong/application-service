@@ -207,30 +207,23 @@ func GetMappedGitOpsComponent(component appstudiov1alpha1.Component) gitopsgenv1
 			Name:      component.ObjectMeta.Name,
 			Namespace: component.ObjectMeta.Namespace,
 		},
-		Spec: gitopsgenv1alpha1.ComponentSpec{
-			ComponentName:                component.Spec.ComponentName,
-			Application:                  component.Spec.Application,
-			Secret:                       component.Spec.Secret,
-			Resources:                    component.Spec.Resources,
-			Replicas:                     component.Spec.Replicas,
-			TargetPort:                   component.Spec.TargetPort,
-			Route:                        component.Spec.Route,
-			Env:                          component.Spec.Env,
-			ContainerImage:               component.Spec.ContainerImage,
-			SkipGitOpsResourceGeneration: component.Spec.SkipGitOpsResourceGeneration,
-		},
+		ComponentName:  component.Spec.ComponentName,
+		Application:    component.Spec.Application,
+		Secret:         component.Spec.Secret,
+		Resources:      component.Spec.Resources,
+		Replicas:       component.Spec.Replicas,
+		TargetPort:     component.Spec.TargetPort,
+		Route:          component.Spec.Route,
+		Env:            component.Spec.Env,
+		ContainerImage: component.Spec.ContainerImage,
 	}
 	if component.Spec.Source.ComponentSourceUnion.GitSource != nil {
-		gitopsMapComponent.Spec.Source = gitopsgenv1alpha1.ComponentSource{
-			ComponentSourceUnion: gitopsgenv1alpha1.ComponentSourceUnion{
-				GitSource: &gitopsgenv1alpha1.GitSource{
-					URL:           component.Spec.Source.ComponentSourceUnion.GitSource.URL,
-					Revision:      component.Spec.Source.ComponentSourceUnion.GitSource.Revision,
-					Context:       component.Spec.Source.ComponentSourceUnion.GitSource.Context,
-					DevfileURL:    component.Spec.Source.ComponentSourceUnion.GitSource.DevfileURL,
-					DockerfileURL: component.Spec.Source.ComponentSourceUnion.GitSource.DockerfileURL,
-				},
-			},
+		gitopsMapComponent.Source = &gitopsgenv1alpha1.ComponentSource{
+			URL:           component.Spec.Source.ComponentSourceUnion.GitSource.URL,
+			Revision:      component.Spec.Source.ComponentSourceUnion.GitSource.Revision,
+			Context:       component.Spec.Source.ComponentSourceUnion.GitSource.Context,
+			DevfileURL:    component.Spec.Source.ComponentSourceUnion.GitSource.DevfileURL,
+			DockerfileURL: component.Spec.Source.ComponentSourceUnion.GitSource.DockerfileURL,
 		}
 	}
 	return gitopsMapComponent
